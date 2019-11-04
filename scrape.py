@@ -10,6 +10,10 @@ def main():
     # parse html
     job_list = soup.find_all('article', attrs={'data-id': ''})
 
+    # parse the first job
+    job_company = job_list[0].find('span', attrs={'class': 'text-bold'}).text
+    job_title = job_list[0].find('h5').text
+    job_location = job_list[0].find('span', attrs={'class': 'subtitle'}).text.split('·')[1]
 
     print('Debugging...')
 
