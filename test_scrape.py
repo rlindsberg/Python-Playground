@@ -13,7 +13,7 @@ import unittest
 
 class TestStringMethods(unittest.TestCase):
 
-    def test_scrape(self):
+    def test_scrape_jobs_in_single_category(self):
         quote_page = 'https://www.stepstone.se/lediga-jobb-i-hela-sverige/data-it/'
         page = urlopen(quote_page)
         soup = BeautifulSoup(page, 'html.parser')
