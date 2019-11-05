@@ -17,9 +17,9 @@ def main():
     conn = sqlite3.connect('scraped_vacancies.sqlite')
     cur = conn.cursor()
     # create table if if does not exist
-    if cur.execute(" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Vacancies' ").fetchone()[0]:
+    if not cur.execute(" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Vacancies' ").fetchone()[0]:
         cur.execute('CREATE TABLE Vacancies (Vacancy_title VARCHAR, Category VARCHAR, '
-                'Company_name VARCHAR, Location VARCHAR)')
+                    'Company_name VARCHAR, Location VARCHAR)')
     conn.commit()
 
     # prepare for BeautifulSoup
@@ -50,11 +50,11 @@ def main():
         last_page_number = last_page.split('/')[-2].split('sida')[1]
 
         # iterate every page
-        for page_number in range(1, last_page_number+1):
+        for page_number in range(1, int(last_page_number) + 1):
 
-            print('Scraping page #' + page_number + '\n')
-            
-            page_url = quote_page + 'sida' + str(page_number) + '/'
+            print('Scraping page #' + str(page_number) + '\n')
+
+            page_url = cat_url + 'sida' + str(page_number) + '/'
             sub_page = urlopen(page_url)
             sub_soup = BeautifulSoup(sub_page, 'html.parser')
 
@@ -70,8 +70,8 @@ def main():
                 print(("%s; %s; %s \n\n" % (job_company, job_title, job_location)))
 
                 # save job to database. SQL-injection is not welcomed
-                cur.execute('INSERT INTO Vacancies (Vacancy_title, Category, Company_name, Location) VALUES (?, ?, ?, ?)',
-                            (job_title, job_cat, job_company, job_location))
+                cur.execute('INSERT INTO Vacancies (Vacancy_title, Category, Company_name, Location)'
+                            'VALUES (?, ?, ?, ?)', (job_title, job_cat, job_company, job_location))
                 conn.commit()
             # sleep for 1 sec so that we don't break the website
             time.sleep(1)
