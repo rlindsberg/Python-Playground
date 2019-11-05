@@ -16,7 +16,9 @@ def main():
     # create database
     conn = sqlite3.connect('scraped_vacancies.sqlite')
     cur = conn.cursor()
-    cur.execute('CREATE TABLE Vacancies (Vacancy_title VARCHAR, Category VARCHAR, '
+    # create table if if does not exist
+    if cur.execute(" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='Vacancies' ").fetchone()[0]:
+        cur.execute('CREATE TABLE Vacancies (Vacancy_title VARCHAR, Category VARCHAR, '
                 'Company_name VARCHAR, Location VARCHAR)')
     conn.commit()
 
