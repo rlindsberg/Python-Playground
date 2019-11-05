@@ -29,10 +29,28 @@ class TestStringMethods(unittest.TestCase):
             job_title = job.find('h5').text
             job_location = job.find('span', attrs={'class': 'subtitle'}).text.split('·')[1]
 
-            self.assertNotEqual(job_company, None, 'The scraped company name is empty')
-            self.assertNotEqual(job_title, None, 'The scraped vacancy title is empty')
-            self.assertNotEqual(job_location, None, 'The scraped location is empty')
+            self.assertNotEqual(job_company, None, 'The scraped company name is undefined')
+            self.assertNotEqual(job_title, None, 'The scraped vacancy title is undefined')
+            self.assertNotEqual(job_location, None, 'The scraped location is undefined')
 
+    def test_scrape_categories(self):
+        quote_page = 'https://www.stepstone.se'
+        page = urlopen(quote_page)
+        soup = BeautifulSoup(page, 'html.parser')
+
+        # parse categories
+        job_categories = soup.find(id='frontpage-category-list').find_all('a')
+
+        self.assertNotEqual(job_categories, [], 'The category list is empty')
+
+        for cat in job_categories:
+            cat_with_no_of_jobs = cat.text
+            # remove the number of jobs and extra space char at position -1
+            job_cat = cat_with_no_of_jobs.split('(', 1)[0][0:-1]
+            cat_url = cat['href']
+
+            self.assertNotEqual(job_cat, None, 'The scraped category is undefined')
+            self.assertNotEqual(cat_url, None, 'The scraped category url is undefined')
 
 if __name__ == '__main__':
     unittest.main()
