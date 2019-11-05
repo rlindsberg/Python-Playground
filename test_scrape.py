@@ -52,5 +52,6 @@ class TestStringMethods(unittest.TestCase):
             self.assertNotEqual(job_cat, None, 'The scraped category is undefined')
             self.assertNotEqual(cat_url, None, 'The scraped category url is undefined')
 
+
 if __name__ == '__main__':
     unittest.main()
