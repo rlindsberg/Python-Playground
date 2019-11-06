@@ -32,6 +32,7 @@ def main():
     job_categories = soup.find(id='frontpage-category-list').find_all('a')
     # cat is {Tag}
     for cat in job_categories:
+        print(cat)
         cat_with_no_of_jobs = cat.text
         # remove the number of jobs and extra space char at position -1
         job_cat = cat_with_no_of_jobs.split('(', 1)[0][0:-1]
@@ -46,8 +47,11 @@ def main():
         """ Parse Sub-pages"""
         # parse the nav bar and find the last page
         page_list = cat_soup.find(id='pagination').find_all('a')
-        last_page = page_list[-1]['href']
-        last_page_number = last_page.split('/')[-2].split('sida')[1]
+        if not page_list == []:
+            last_page = page_list[-1]['href']
+            last_page_number = last_page.split('/')[-2].split('sida')[1]
+        else:
+            last_page_number = 1
 
         # iterate every page
         for page_number in range(1, int(last_page_number) + 1):

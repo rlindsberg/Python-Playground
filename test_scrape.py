@@ -33,6 +33,40 @@ class TestStringMethods(unittest.TestCase):
             self.assertNotEqual(job_title, None, 'The scraped vacancy title is undefined')
             self.assertNotEqual(job_location, None, 'The scraped location is undefined')
 
+    def test_scrape_all_sub_pages(self):
+        # prepare for BeautifulSoup
+        quote_page = 'https://www.stepstone.se'
+        page = urlopen(quote_page)
+        soup = BeautifulSoup(page, 'html.parser')
+
+        """ Parse Categories"""
+        # parse html
+        job_categories = soup.find(id='frontpage-category-list').find_all('a')
+        # cat is {Tag}
+        for cat in job_categories:
+            cat_with_no_of_jobs = cat.text
+            # remove the number of jobs and extra space char at position -1
+            job_cat = cat_with_no_of_jobs.split('(', 1)[0][0:-1]
+            cat_url = cat['href']
+
+            print('Scraping category: ' + job_cat + '\n')
+
+            # do old parsing stuff
+            cat_page = urlopen(cat_url)
+            cat_soup = BeautifulSoup(cat_page, 'html.parser')
+
+            """ Parse Sub-pages"""
+            # parse the nav bar and find the last page
+            page_list = cat_soup.find(id='pagination').find_all('a')
+            if not page_list == []:
+                last_page = page_list[-1]['href']
+                last_page_number = last_page.split('/')[-2].split('sida')[1]
+            else:
+                last_page_number = 1
+
+            self.assertIsInstance(int(last_page_number), int)
+            print('Assertion successful')
+
     def test_scrape_categories(self):
         quote_page = 'https://www.stepstone.se'
         page = urlopen(quote_page)
